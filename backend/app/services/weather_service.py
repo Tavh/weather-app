@@ -1,0 +1,45 @@
+import requests
+from datetime import datetime, timezone
+from app.dtos.weather_dto import WeatherData
+from app.core.exceptions import WeatherProviderUnavailable
+from app.core.config import Config
+
+class WeatherService:
+    # Implemented in 'YAGNI' approach. If other providers are needed
+    # code change is required but it is so small that it is better
+    # than implementing strategy pattern for different providers
+    # as that would be overengineering for this simple case
+    def fetch_current_weather(self, latitude: float, longitude: float) -> WeatherData:
+        """
+        Fetches current weather for given coordinates from the configured provider.
+        """
+        params = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "current_weather": "true"
+        }
+
+        try:
+            response = requests.get(
+                Config.WEATHER_PROVIDER_BASE_URL, 
+                params=params, 
+                timeout=Config.WEATHER_PROVIDER_TIMEOUT_SECONDS
+            )
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            if "current_weather" not in data:
+                raise ValueError("Invalid response format from weather provider")
+
+            current = data["current_weather"]
+            
+            return WeatherData(
+                temperature_celsius=current["temperature"],
+                fetched_at=datetime.now(timezone.utc)
+            )
+
+        except (requests.RequestException, ValueError) as e:
+            # Log error strictly if we had a logger
+            # print(f"Weather fetch failed: {e}") 
+            raise WeatherProviderUnavailable(description="Unable to fetch weather data")

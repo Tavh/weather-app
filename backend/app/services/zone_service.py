@@ -51,11 +51,16 @@ class ZoneService:
     def refresh_zone(self, zone_id: int) -> ZoneResponse:
         zone = self._get_owned_zone_or_404(zone_id)
         
-        # TODO: Implement actual weather fetching logic here
-        # For now, we simulate a successful refresh
-        from datetime import datetime
-        zone.temperature = 25.0
-        zone.last_fetched_at = datetime.utcnow()
+        # External Service Call
+        # Note: In a larger app, we might inject this dependency
+        from app.services.weather_service import WeatherService
+        weather_service = WeatherService()
+        
+        weather_data = weather_service.fetch_current_weather(zone.latitude, zone.longitude)
+        
+        # Update Zone State
+        zone.temperature = weather_data.temperature_celsius
+        zone.last_fetched_at = weather_data.fetched_at
         zone.weather_status = WeatherStatus.FRESH
         
         updated_zone = self.repo.update(zone)

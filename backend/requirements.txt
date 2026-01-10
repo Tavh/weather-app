@@ -1,9 +1,11 @@
-connexion[flask,swagger-ui]
-flask
-flask-sqlalchemy
+connexion[flask,swagger-ui]==2.14.2
+flask==2.2.5
+werkzeug==2.2.3
+flask-sqlalchemy==3.0.5
 pyodbc
 pyjwt
 passlib
 argon2-cffi
 swagger-ui-bundle
 pydantic
+requests
