@@ -1,51 +1,76 @@
 # Weather App Backend
 
-This is the backend for the Weather App, built with Python, Flask, and Connexion (OpenAPI 3.0).
+This is the Python/Flask/Connexion backend for the Weather App. It uses OpenAPI 3.0 for API definition and validation.
 
-## Prerequisites
+## Project Structure
 
-- Python 3.9+
-- A compatible ODBC driver for MSSQL might be required for the `pyodbc` dependency (e.g., ODBC Driver 17 for SQL Server), though the current implementation contains stubs.
+```text
+backend/
+├── app/
+│   ├── api/            # Route handlers (controllers)
+│   │   ├── auth.py     # Auth endpoints (Register, Login)
+│   │   └── zones.py    # Zone management endpoints
+│   ├── core/
+│   │   ├── config.py   # Configuration (SQLAlchemy, JWT settings)
+│   │   ├── security.py # JWT and Password utilities
+│   │   └── database.py # DB init (SQLAlchemy)
+│   └── __init__.py     # App factory (create_app)
+├── openapi/
+│   └── openapi.yaml    # OpenAPI 3.0 Specification
+├── run.py              # Application entry point
+├── requirements.txt    # dependencies
+└── README.md
+```
 
-## Installation
+## Setup & Running
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   # Windows
-   python -m venv .venv
-   .venv\Scripts\activate
-
-   # macOS/Linux
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-3. Install dependencies:
+1. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-## Configuration
+2. **Run the Server**
+   ```bash
+   python run.py
+   ```
+   The server runs at `http://127.0.0.1:8080`.
+   
+   - **Swagger UI**: [http://127.0.0.1:8080/api/v1/ui/](http://127.0.0.1:8080/api/v1/ui/)
+   - **API Prefix**: `/api/v1`
 
-Configuration settings are located in `app/core/config.py`.
-Since this is a stubbed implementation, no database connection is actively established by default, but you can configure `SQLALCHEMY_DATABASE_URI` there.
+## Testing with Curl
 
-## Running the Application
-
-Start the Flask development server:
+### 1. Register (Stub)
 ```bash
-python run.py
+curl -X POST http://127.0.0.1:8080/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d "{\"username\": \"testuser\", \"password\": \"securePass123\"}"
 ```
 
-The application will start on `http://localhost:8080`.
+### 2. Login (Get Token)
+```bash
+curl -X POST http://127.0.0.1:8080/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{\"username\": \"testuser\", \"password\": \"securePass123\"}"
+```
+*Returns a stub token: `{"access_token": "stub_token", ...}`*
 
-## API Documentation
+### 3. Create Zone
+```bash
+curl -X POST http://127.0.0.1:8080/api/v1/zones \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer stub_token" \
+  -d "{\"name\": \"My Home\", \"latitude\": 48.85, \"longitude\": 2.35}"
+```
 
-Once the application is running, you can access the interactive Swagger UI documentation at:
+### 4. Get Zone
+```bash
+curl -X GET http://127.0.0.1:8080/api/v1/zones/1 \
+  -H "Authorization: Bearer stub_token"
+```
 
-[http://localhost:8080/api/v1/ui](http://localhost:8080/api/v1/ui)
+### 5. Refresh Zone Weather
+```bash
+curl -X POST http://127.0.0.1:8080/api/v1/zones/1/refresh \
+  -H "Authorization: Bearer stub_token"
+```
