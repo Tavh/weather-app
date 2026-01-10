@@ -8,8 +8,8 @@ from app.core.config import Config
 logger = logging.getLogger(__name__)
 
 engine = create_engine(
-    Config.SQLALCHEMY_DATABASE_URI,
-    connect_args={"check_same_thread": False} if "sqlite" in Config.SQLALCHEMY_DATABASE_URI else {}
+    Config.DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in Config.DATABASE_URL else {}
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -36,5 +36,5 @@ def init_db():
     """Explicitly create tables."""
     import app.models.user
     import app.models.zone
-    print(f"Creating tables in: {Config.SQLALCHEMY_DATABASE_URI}")
+    print(f"Creating tables in: {Config.DATABASE_URL}")
     Base.metadata.create_all(bind=engine)

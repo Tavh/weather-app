@@ -15,7 +15,7 @@ def app():
         "TESTING": True,
         # We don't actually use this config for the session fixture logic below,
         # but it's good practice.
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+        "DATABASE_URL": "sqlite:///:memory:"
     })
     
     # Create tables once

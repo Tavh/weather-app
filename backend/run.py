@@ -13,4 +13,5 @@ if __name__ == '__main__':
     
     # Run using the standard Flask development server
     # With Connexion 2.x, routes are registered on 'app'
-    app.run(host="127.0.0.1", port=8080, debug=False)
+    # Use 0.0.0.0 to bind to all interfaces, making it accessible from outside the container
+    app.run(host="0.0.0.0", port=8080, debug=False)

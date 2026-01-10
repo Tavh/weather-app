@@ -4,10 +4,11 @@ class Config:
 
     # DB
     
-    # Default to SQLite for local testing if no MSSQL URL provided
-    # Use absolute path for sqlite to avoid issues with relative paths
+    # Database Configuration
+    # PRIMARY: Set DATABASE_URL env var
+    # FALLBACK: Local SQLite for development without Docker
     basedir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "weather.db")}')
+    DATABASE_URL = os.getenv('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "weather.db")}')
     
     # Auth & Security
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev_secret_key_change_in_production')
