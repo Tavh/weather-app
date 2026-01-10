@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from werkzeug.exceptions import NotFound
-from app.data.zone_repository import ZoneRepository
+from app.repo.zone_repository import ZoneRepository
 from app.models.zone import Zone
 from app.dtos.zone_dto import ZoneCreate, ZoneUpdate, ZoneResponse
 from app.core.enums import WeatherStatus

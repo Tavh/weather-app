@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.zone import Zone
-from app.data.base_repository import UserScopedRepository
+from app.repo.base_repository import UserScopedRepository
 
 class ZoneRepository(UserScopedRepository[Zone]):
     def __init__(self, session: Session, user_id: int):

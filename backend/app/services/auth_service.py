@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from werkzeug.exceptions import BadRequest, Unauthorized
 from app.dtos.auth_dto import UserRegister, UserLogin, AuthResponse
 from app.models.user import User
-from app.data.user_repository import UserRepository
+from app.repo.user_repository import UserRepository
 from app.core.security import hash_password, check_password, create_access_token
 from app.core.config import Config
 
