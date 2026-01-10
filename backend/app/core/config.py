@@ -25,4 +25,10 @@ class Config:
         os.getenv("WEATHER_PROVIDER_TIMEOUT_SECONDS", "5")
     )
 
+    # City Geocoding provider
+    CITY_GEOCODING_BASE_URL = os.getenv(
+        "CITY_GEOCODING_BASE_URL",
+        "https://geocoding-api.open-meteo.com/v1/search"
+    )
+
 
