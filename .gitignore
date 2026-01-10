@@ -31,4 +31,6 @@ htmlcov/
 
 # DB
 
-*.db
+*.DB
+
+temp_debug/
