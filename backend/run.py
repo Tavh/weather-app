@@ -10,4 +10,4 @@ if __name__ == '__main__':
     
     # Run using the standard Flask development server
     # With Connexion 2.x, routes are registered on 'app'
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=False)

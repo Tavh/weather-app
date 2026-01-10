@@ -6,3 +6,4 @@ pyjwt
 passlib
 argon2-cffi
 swagger-ui-bundle
+pydantic
