@@ -1,7 +1,8 @@
 
-connexion[swagger-ui]
+connexion[flask,swagger-ui]
 flask
 flask-sqlalchemy
 pyodbc
 pyjwt
 passlib
+argon2-cffi
