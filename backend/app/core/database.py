@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -11,15 +12,25 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-def get_db():
-    db = SessionLocal()
+@contextmanager
+def get_session():
+    """
+    Request-scoped session context manager.
+    Handles commit on success, rollback on error, and guaranteed closing.
+    """
+    session = SessionLocal()
     try:
-        yield db
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
     finally:
-        db.close()
+        session.close()
 
 def init_db():
     """Explicitly create tables."""
     import app.models.user
+    import app.models.zone
     print(f"Creating tables in: {Config.SQLALCHEMY_DATABASE_URI}")
     Base.metadata.create_all(bind=engine)
