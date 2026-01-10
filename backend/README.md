@@ -5,6 +5,7 @@ A robust, layered REST API backend for managing weather zones and fetching real-
 ## 1. Project Overview
 
 *   **Authentication**: Secure JWT-based auth with Argon2 password hashing.
+*   **City Search**: Search for cities by name using Open-Meteo Geocoding API.
 *   **Zone Management**: CRUD operations for weather zones with strict multi-tenancy (users manage only their own zones).
 *   **Weather Integration**: Real-time weather fetching via Open-Meteo API.
 *   **Observability**: Structured, production-ready logging.
@@ -145,6 +146,7 @@ DATABASE_URL=sqlite:///weather.db
 | `SECRET_KEY` | JWT signing key (change in production) | `your_secret_key_here` |
 | `LOG_LEVEL` | Logging level | `DEBUG`, `INFO`, `ERROR` |
 | `WEATHER_PROVIDER_BASE_URL` | Weather API endpoint | `https://api.open-meteo.com/v1/forecast` |
+| `CITY_GEOCODING_BASE_URL` | City geocoding API endpoint | `https://geocoding-api.open-meteo.com/v1/search` |
 
 **Connection String Examples**:
 
@@ -180,7 +182,14 @@ curl -X POST http://127.0.0.1:8080/api/v1/auth/login \
 ```
 *Copy the `access_token` from the response for the following steps.*
 
-**3. Create a Zone**
+**3. Search for Cities**
+```bash
+# Replace <TOKEN> with your JWT
+curl -X GET "http://127.0.0.1:8080/api/v1/cities/search?q=Paris" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**4. Create a Zone**
 ```bash
 # Replace <TOKEN> with your JWT
 curl -X POST http://127.0.0.1:8080/api/v1/zones \
@@ -189,13 +198,13 @@ curl -X POST http://127.0.0.1:8080/api/v1/zones \
   -d "{\"name\": \"Vienna\", \"latitude\": 48.2082, \"longitude\": 16.3738}"
 ```
 
-**4. List Zones**
+**5. List Zones**
 ```bash
 curl -X GET http://127.0.0.1:8080/api/v1/zones \
   -H "Authorization: Bearer <TOKEN>"
 ```
 
-**5. Refresh Weather Data**
+**6. Refresh Weather Data**
 ```bash
 # Replace <ZONE_ID> with an ID from the list command
 curl -X POST http://127.0.0.1:8080/api/v1/zones/<ZONE_ID>/refresh \
@@ -214,4 +223,4 @@ python -m pytest tests
 python -m pytest tests/test_zones.py
 ```
 
-**Scope**: Tests cover Authentication flows, Zone CRUD operations, Multi-tenant data isolation, and Weather Service integration (mocked).
+**Scope**: Tests cover Authentication flows, City Search functionality, Zone CRUD operations, Multi-tenant data isolation, and Weather Service integration (mocked).
