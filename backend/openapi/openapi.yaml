@@ -1,0 +1,392 @@
+openapi: 3.0.0
+info:
+  title: Weather App API
+  description: Backend for a small Weather App - Ikarus Security task
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: app.core.security.decode_token
+
+  schemas:
+    # --- Auth Schemas ---
+    UserRegister:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          example: "johndoe"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "secret123"
+    
+    UserLogin:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: "johndoe"
+        password:
+          type: string
+          format: password
+          example: "secret123"
+
+    AuthResponse:
+      type: object
+      required: [access_token, token_type, expires_in]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token expiration in seconds
+          example: 3600
+    
+    # --- Zone Schemas ---
+    ZoneCreate:
+      type: object
+      required: [name, latitude, longitude]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: "Home"
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+          example: 48.8566
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+          example: 2.3522
+
+    ZoneUpdate:
+      type: object
+      required: [name, latitude, longitude]
+      description: Payload for updating a zone. Full replacement.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: "Home Updated"
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+          example: 48.8566
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+          example: 2.3522
+    
+    ZoneResponse:
+      type: object
+      required: [id, name, latitude, longitude]
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          type: string
+          example: "Home"
+        latitude:
+          type: number
+          format: float
+          example: 48.8566
+        longitude:
+          type: number
+          format: float
+          example: 2.3522
+        temperature:
+          type: number
+          nullable: true
+          readOnly: true
+          description: Cached temperature in Celsius
+          example: 22.5
+        last_fetched_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+          description: Timestamp of the last successful weather fetch
+        weather_status:
+          type: string
+          enum: [never_fetched, cached, fresh]
+          readOnly: true
+          description: Weather data status
+          example: cached
+
+    Error:
+      type: object
+      required: [detail, status, title, type]
+      properties:
+        detail:
+          type: string
+          example: "The requested resource was not found."
+        status:
+          type: integer
+          example: 404
+        title:
+          type: string
+          example: "Not Found"
+        type:
+          type: string
+          example: "about:blank"
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: app.api.auth.register
+      security: []
+      requestBody:
+        description: User registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "User created successfully"
+        400:
+          description: Invalid input or username taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      summary: Login and retrieve JWT
+      operationId: app.api.auth.login
+      security: []
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        200:
+          description: JWT Token generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /zones:
+    get:
+      summary: List all weather zones for the authenticated user
+      operationId: app.api.zones.list_zones
+      responses:
+        200:
+          description: List of zones owned by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ZoneResponse'
+        401:
+          description: Unauthorized (Valid JWT required)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new weather zone
+      operationId: app.api.zones.create_zone
+      requestBody:
+        description: Zone creation details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZoneCreate'
+      responses:
+        201:
+          description: Zone created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /zones/{zone_id}:
+    parameters:
+      - in: path
+        name: zone_id
+        schema:
+          type: integer
+        required: true
+        description: ID of the zone to manage
+        
+    get:
+      summary: Get details of a specific zone
+      operationId: app.api.zones.get_zone
+      responses:
+        200:
+          description: Zone details returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Zone not found or access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update a zone (name or location)
+      description: Full replacement of the zone's editable fields.
+      operationId: app.api.zones.update_zone
+      requestBody:
+        description: New values for the zone
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZoneUpdate'
+      responses:
+        200:
+          description: Zone updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Zone not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a zone
+      operationId: app.api.zones.delete_zone
+      responses:
+        204:
+          description: Zone deleted successfully
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Zone not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /zones/{zone_id}/refresh:
+    post:
+      summary: Force refresh of weather data
+      description: Manually triggers a weather fetch for this zone.
+      operationId: app.api.zones.refresh_zone
+      parameters:
+        - in: path
+          name: zone_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the zone to refresh
+      responses:
+        200:
+          description: Weather data refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Zone not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        503:
+          description: Weather provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

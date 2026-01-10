@@ -1,0 +1,7 @@
+
+connexion[swagger-ui]
+flask
+flask-sqlalchemy
+pyodbc
+pyjwt
+passlib
