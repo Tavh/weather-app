@@ -1,0 +1,5 @@
+DEFAULT_PASSWORD = "Password123!"
+DEFAULT_USERNAME = "testuser"
+ZONE_A_NAME = "Test Zone A"
+ZONE_A_LAT = 45.0
+ZONE_A_LON = 12.0
