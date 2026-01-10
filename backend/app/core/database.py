@@ -1,8 +1,11 @@
+import logging
 from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import Config
+
+logger = logging.getLogger(__name__)
 
 engine = create_engine(
     Config.SQLALCHEMY_DATABASE_URI,
@@ -22,7 +25,8 @@ def get_session():
     try:
         yield session
         session.commit()
-    except Exception:
+    except Exception as e:
+        logger.error(f"Database session error, rolling back: {str(e)}")
         session.rollback()
         raise
     finally:

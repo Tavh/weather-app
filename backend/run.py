@@ -5,6 +5,9 @@ connexion_app = create_app()
 app = connexion_app.app
 
 if __name__ == '__main__':
+    from app.core.logging import configure_logging
+    configure_logging()
+    
     print("Initializing database...")
     init_db()
     

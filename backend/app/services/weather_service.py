@@ -1,8 +1,11 @@
+import logging
 import requests
 from datetime import datetime, timezone
 from app.dtos.weather_dto import WeatherData
 from app.core.exceptions import WeatherProviderUnavailable
 from app.core.config import Config
+
+logger = logging.getLogger(__name__)
 
 class WeatherService:
     # Implemented in 'YAGNI' approach. If other providers are needed
@@ -20,14 +23,18 @@ class WeatherService:
         }
 
         try:
+            url = Config.WEATHER_PROVIDER_BASE_URL
+            logger.debug(f"Fetching weather from {url} with params: {params}")
+
             response = requests.get(
-                Config.WEATHER_PROVIDER_BASE_URL, 
+                url, 
                 params=params, 
                 timeout=Config.WEATHER_PROVIDER_TIMEOUT_SECONDS
             )
             response.raise_for_status()
             
             data = response.json()
+            logger.info("Weather data fetched successfully from provider")
             
             if "current_weather" not in data:
                 raise ValueError("Invalid response format from weather provider")
@@ -40,6 +47,5 @@ class WeatherService:
             )
 
         except (requests.RequestException, ValueError) as e:
-            # Log error strictly if we had a logger
-            # print(f"Weather fetch failed: {e}") 
+            logger.error(f"Weather fetch failed: {str(e)}")
             raise WeatherProviderUnavailable(description="Unable to fetch weather data")
