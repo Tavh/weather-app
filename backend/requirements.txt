@@ -1,4 +1,3 @@
-
 connexion[flask,swagger-ui]
 flask
 flask-sqlalchemy
@@ -6,3 +5,4 @@ pyodbc
 pyjwt
 passlib
 argon2-cffi
+swagger-ui-bundle

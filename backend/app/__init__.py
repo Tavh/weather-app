@@ -4,7 +4,6 @@ from pathlib import Path
 def create_app():
     # Specification dir
     specification_dir = Path(__file__).parent.parent / 'openapi'
-    print(f"DEBUG: Resolving OpenAPI spec at: {specification_dir.resolve()}")
     
     # Create the Connexion application instance (v2 style)
     connexion_app = connexion.App(__name__, specification_dir=specification_dir)
