@@ -18,6 +18,7 @@ class ZoneService:
         logger.info(f"Creating zone '{dto.name}' for user {self.user_id}")
         new_zone = Zone(
             name=dto.name,
+            country_code=dto.country_code,
             latitude=dto.latitude,
             longitude=dto.longitude,
             weather_status=WeatherStatus.NEVER_FETCHED
@@ -39,6 +40,7 @@ class ZoneService:
         
         logger.info(f"Updating zone {zone_id} for user {self.user_id}")
         zone.name = dto.name
+        zone.country_code = dto.country_code
         zone.latitude = dto.latitude
         zone.longitude = dto.longitude
         zone.weather_status = WeatherStatus.NEVER_FETCHED
