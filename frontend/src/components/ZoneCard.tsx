@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Card } from 'baseui/card'
 import { HeadingSmall, LabelMedium, LabelSmall } from 'baseui/typography'
 import { Button } from 'baseui/button'
+import { Input } from 'baseui/input'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
 import ErrorMessage from './ErrorMessage'
@@ -10,7 +11,7 @@ import { WEATHER_TEMPERATURE_THRESHOLDS_IN_CELCIUS, WEATHER_EMOJIS, MILLISECONDS
 
 interface ZoneCardProps {
   zone: Zone
-  onZoneUpdated: () => void
+  onZoneUpdated: (updatedZone: Zone) => void
   onDelete: (zoneId: number) => void
 }
 
@@ -18,15 +19,20 @@ function ZoneCard({ zone, onZoneUpdated, onDelete }: ZoneCardProps) {
   const apiClient = useApiClient()
   const [refreshing, setRefreshing] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedName, setEditedName] = useState(zone.name)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [showUpdateMessage, setShowUpdateMessage] = useState(false)
 
   const handleRefresh = async () => {
     setRefreshing(true)
     setError('')
+    setShowUpdateMessage(false) // Clear update message after refresh
     
     try {
-      await apiClient.refreshZone(zone.id)
-      onZoneUpdated()
+      const updatedZone = await apiClient.refreshZone(zone.id)
+      onZoneUpdated(updatedZone)
     } catch (err) {
       setError(getErrorMessage(err))
     } finally {
@@ -48,6 +54,45 @@ function ZoneCard({ zone, onZoneUpdated, onDelete }: ZoneCardProps) {
       setError(getErrorMessage(err))
     } finally {
       setDeleting(false)
+    }
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true)
+    setEditedName(zone.name)
+    setError('')
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+    setEditedName(zone.name)
+    setError('')
+  }
+
+  const handleSave = async () => {
+    if (!editedName.trim()) {
+      setError('Zone name cannot be empty')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    
+    try {
+      const updatedZone = await apiClient.updateZone(
+        zone.id,
+        editedName.trim(),
+        zone.latitude,
+        zone.longitude,
+        zone.country_code
+      )
+      setIsEditing(false)
+      setShowUpdateMessage(true) // Show message after successful update
+      onZoneUpdated(updatedZone)
+    } catch (err) {
+      setError(getErrorMessage(err))
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -97,35 +142,90 @@ function ZoneCard({ zone, onZoneUpdated, onDelete }: ZoneCardProps) {
     <Card>
       {/* Header: City name + country code and action buttons */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-        <div>
-          <HeadingSmall style={{ margin: 0, marginBottom: '4px' }}>
-            {zone.name}
-            {zone.country_code && (
-              <span style={{ marginLeft: '8px', fontSize: '14px', fontWeight: 400, color: '#666' }}>
-                {zone.country_code}
-              </span>
-            )}
-          </HeadingSmall>
+        <div style={{ flex: 1, marginRight: '16px' }}>
+          {isEditing ? (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              {/* @ts-expect-error Base Web type compatibility issue */}
+              <Input
+                value={editedName}
+                onChange={(e) => setEditedName(e.currentTarget.value)}
+                placeholder="Zone name"
+                disabled={saving}
+                overrides={{
+                  Input: {
+                    style: {
+                      flex: 1,
+                    },
+                  },
+                }}
+              />
+              <Button
+                size="compact"
+                onClick={handleSave}
+                disabled={saving || !editedName.trim()}
+              >
+                {saving ? 'Saving...' : 'Save'}
+              </Button>
+              <Button
+                size="compact"
+                onClick={handleCancel}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <HeadingSmall style={{ margin: 0, marginBottom: '4px' }}>
+              {zone.name}
+              {zone.country_code && (
+                <span style={{ marginLeft: '8px', fontSize: '14px', fontWeight: 400, color: '#666' }}>
+                  {zone.country_code}
+                </span>
+              )}
+            </HeadingSmall>
+          )}
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Button
-            size="compact"
-            onClick={handleRefresh}
-            disabled={refreshing || deleting}
-          >
-            {refreshing ? 'Refreshing...' : 'Refresh Weather'}
-          </Button>
-          <Button
-            size="compact"
-            onClick={handleDelete}
-            disabled={refreshing || deleting}
-          >
-            {deleting ? 'Deleting...' : 'Delete'}
-          </Button>
-        </div>
+        {!isEditing && (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button
+              size="compact"
+              onClick={handleEdit}
+              disabled={refreshing || deleting}
+            >
+              Edit
+            </Button>
+            <Button
+              size="compact"
+              onClick={handleRefresh}
+              disabled={refreshing || deleting}
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh Weather'}
+            </Button>
+            <Button
+              size="compact"
+              onClick={handleDelete}
+              disabled={refreshing || deleting}
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
+        )}
       </div>
 
       {error && <ErrorMessage message={error} />}
+
+      {showUpdateMessage && (
+        <div style={{ 
+          marginBottom: '8px', 
+          padding: '6px 10px', 
+          backgroundColor: '#f5f5f5', 
+          borderRadius: '4px',
+          fontSize: '12px',
+          color: '#666'
+        }}>
+          Zone updated. Weather data was reset — please refresh.
+        </div>
+      )}
 
       {/* Temperature - Second most prominent */}
       <div style={{ marginBottom: '8px' }}>

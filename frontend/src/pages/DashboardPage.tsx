@@ -46,6 +46,10 @@ function DashboardPage() {
     setZones(zones.filter(zone => zone.id !== zoneId))
   }
 
+  const handleZoneUpdated = (updatedZone: Zone) => {
+    setZones(zones.map(zone => zone.id === updatedZone.id ? updatedZone : zone))
+  }
+
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
@@ -68,7 +72,7 @@ function DashboardPage() {
             {!loading && !error && (
               <ZoneList 
                 zones={zones} 
-                onZoneUpdated={fetchZones}
+                onZoneUpdated={handleZoneUpdated}
                 onZoneDeleted={handleZoneDeleted}
               />
             )}

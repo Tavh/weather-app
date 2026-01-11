@@ -4,7 +4,7 @@ import type { Zone } from '../types/api'
 
 interface ZoneListProps {
   zones: Zone[]
-  onZoneUpdated: () => void
+  onZoneUpdated: (updatedZone: Zone) => void
   onZoneDeleted: (zoneId: number) => void
 }
 
