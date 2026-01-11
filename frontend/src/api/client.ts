@@ -29,7 +29,19 @@ class ApiClient {
       })
 
       if (!response.ok) {
-        const errorMessage = ResponseStatusToErrorMessage[response.status] ?? STANDARD_GENERAL_ERROR_MSG 
+        let errorMessage = ResponseStatusToErrorMessage[response.status] ?? STANDARD_GENERAL_ERROR_MSG
+        
+        // Special handling for 401: distinguish between login failure and token expiration
+        if (response.status === 401) {
+          // On /auth/login, 401 means invalid credentials
+          // On other endpoints, 401 means token expired/invalid
+          if (endpoint === '/auth/login') {
+            errorMessage = 'Invalid username or password'
+          } else {
+            errorMessage = 'Session expired. Please log in again.'
+          }
+        }
+        
         throw new Error(errorMessage)
       }
 

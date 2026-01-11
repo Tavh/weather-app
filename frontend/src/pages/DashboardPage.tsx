@@ -5,6 +5,8 @@ import { Button } from 'baseui/button'
 import { useAuth } from '../contexts/AuthContext'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
+import CitySearch from '../components/CitySearch'
+import ZoneList from '../components/ZoneList'
 import type { Zone } from '../types/api'
 
 function DashboardPage() {
@@ -15,21 +17,20 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const fetchZones = async () => {
-      console.log('fetchZones')
-      setLoading(true)
-      setError('')
-      try {
-        const zonesData = await apiClient.listZones()
-        setZones(zonesData)
-      } catch (err) {
-        setError(getErrorMessage(err))
-      } finally {
-        setLoading(false)
-      }
+  const fetchZones = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const zonesData = await apiClient.listZones()
+      setZones(zonesData)
+    } catch (err) {
+      setError(getErrorMessage(err))
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchZones()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // TODO: Currently only fetch on mount, think if we should add a condition to refetch
@@ -39,12 +40,12 @@ function DashboardPage() {
     navigate('/login')
   }
 
-  const isOkAndEmptyZones = !loading && !error && zones.length === 0
-  const isOkAndHasZones = !loading && !error && zones.length > 0
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
       <HeadingLarge>Dashboard</HeadingLarge>
       <p>You are logged in.</p>
+
+      <CitySearch onZoneCreated={fetchZones} />
 
       {loading && <p>Loading zones...</p>}
       
@@ -54,22 +55,7 @@ function DashboardPage() {
         </div>
       )}
 
-      {isOkAndEmptyZones && (
-        <p>No zones yet</p>
-      )}
-
-      {isOkAndHasZones && (
-        <div style={{ marginTop: '20px' }}>
-          <h2>Zones</h2>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {zones.map((zone) => (
-              <li>
-                Zone Placeholder
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {!loading && !error && <ZoneList zones={zones} />}
 
       <Button
         onClick={handleLogout}
