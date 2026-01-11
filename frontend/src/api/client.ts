@@ -109,6 +109,13 @@ class ApiClient {
       method: 'DELETE',
     })
   }
+
+  async updateZone(zoneId: number, name: string, latitude: number, longitude: number, countryCode: string | null = null): Promise<Zone> {
+    return this.request<Zone>(`/zones/${zoneId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name, country_code: countryCode, latitude, longitude }),
+    })
+  }
 }
 
 export function useApiClient(): ApiClient {
