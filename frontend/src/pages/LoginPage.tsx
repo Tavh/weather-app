@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Input } from 'baseui/input'
 import { Button } from 'baseui/button'
+import { Link } from 'react-router-dom'
 import { FormControl } from 'baseui/form-control'
 import { HeadingLarge } from 'baseui/typography'
 import { useAuth } from '../contexts/AuthContext'
@@ -77,6 +78,19 @@ function LoginPage() {
           {loading ? 'Logging in...' : 'Login'}
         </Button>
       </form>
+
+      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        <Link 
+          to="/register" 
+          style={{ 
+            color: '#276EF1', 
+            textDecoration: 'none',
+            fontSize: '14px'
+          }}
+        >
+          Don't have an account? Register here
+        </Link>
+      </div>
     </div>
   )
 }
