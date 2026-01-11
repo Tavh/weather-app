@@ -5,6 +5,7 @@ import { Button } from 'baseui/button'
 import { FormControl } from 'baseui/form-control'
 import { HeadingLarge } from 'baseui/typography'
 import { useApiClient } from '../api/client'
+import { getErrorMessage } from '../util'
 
 function RegisterPage() {
   const [username, setUsername] = useState('')
@@ -23,7 +24,7 @@ function RegisterPage() {
       await apiClient.register(username, password)
       navigate('/login')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed')
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

@@ -7,6 +7,7 @@ import { FormControl } from 'baseui/form-control'
 import { HeadingLarge } from 'baseui/typography'
 import { useAuth } from '../contexts/AuthContext'
 import { useApiClient } from '../api/client'
+import { getErrorMessage } from '../util'
 
 function LoginPage() {
   const [username, setUsername] = useState('')
@@ -27,7 +28,7 @@ function LoginPage() {
       login(response.access_token)
       navigate('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

@@ -1,3 +1,4 @@
+import { STANDARD_GENERAL_ERROR_MSG, ResponseStatusToErrorMessage } from '../constants'
 import { useAuth } from '../contexts/AuthContext'
 import type { AuthResponse, UserLogin, UserRegister, CitySearchResponse, Zone } from '../types/api'
 
@@ -21,20 +22,31 @@ class ApiClient {
       ...options.headers,
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    })
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      if (!response.ok) {
+        const errorMessage = ResponseStatusToErrorMessage[response.status] ?? STANDARD_GENERAL_ERROR_MSG 
+        throw new Error(errorMessage)
+      }
+
+      if (response.status === 204) {
+        return null as T
+      }
+
+      return await response.json() as T
+    } catch (err) {
+      // Handle network errors and other fetch failures
+      if (err instanceof Error) {
+        // If it's already our normalized error, re-throw it
+        throw err
+      }
+      // Network failure or other unexpected errors
+      throw new Error('Server unavailable, please try again')
     }
-
-    if (response.status === 204) {
-      return null as T
-    }
-
-    return await response.json() as T
   }
 
   async login(username: string, password: string): Promise<AuthResponse> {
