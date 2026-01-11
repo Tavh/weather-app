@@ -11,11 +11,13 @@ import { WEATHER_TEMPERATURE_THRESHOLDS_IN_CELCIUS, WEATHER_EMOJIS, MILLISECONDS
 interface ZoneCardProps {
   zone: Zone
   onZoneUpdated: () => void
+  onDelete: (zoneId: number) => void
 }
 
-function ZoneCard({ zone, onZoneUpdated }: ZoneCardProps) {
+function ZoneCard({ zone, onZoneUpdated, onDelete }: ZoneCardProps) {
   const apiClient = useApiClient()
   const [refreshing, setRefreshing] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
 
   const handleRefresh = async () => {
@@ -29,6 +31,23 @@ function ZoneCard({ zone, onZoneUpdated }: ZoneCardProps) {
       setError(getErrorMessage(err))
     } finally {
       setRefreshing(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(`Are you sure you want to delete "${zone.name}"?`)
+    if (!confirmed) return
+
+    setDeleting(true)
+    setError('')
+    
+    try {
+      await apiClient.deleteZone(zone.id)
+      onDelete(zone.id)
+    } catch (err) {
+      setError(getErrorMessage(err))
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -76,7 +95,7 @@ function ZoneCard({ zone, onZoneUpdated }: ZoneCardProps) {
 
   return (
     <Card>
-      {/* Header: City name + country code and Refresh button */}
+      {/* Header: City name + country code and action buttons */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
         <div>
           <HeadingSmall style={{ margin: 0, marginBottom: '4px' }}>
@@ -88,13 +107,22 @@ function ZoneCard({ zone, onZoneUpdated }: ZoneCardProps) {
             )}
           </HeadingSmall>
         </div>
-        <Button
-          size="compact"
-          onClick={handleRefresh}
-          disabled={refreshing}
-        >
-          {refreshing ? 'Refreshing...' : 'Refresh Weather'}
-        </Button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            size="compact"
+            onClick={handleRefresh}
+            disabled={refreshing || deleting}
+          >
+            {refreshing ? 'Refreshing...' : 'Refresh Weather'}
+          </Button>
+          <Button
+            size="compact"
+            onClick={handleDelete}
+            disabled={refreshing || deleting}
+          >
+            {deleting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </div>
       </div>
 
       {error && <ErrorMessage message={error} />}

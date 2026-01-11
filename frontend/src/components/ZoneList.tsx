@@ -5,9 +5,10 @@ import type { Zone } from '../types/api'
 interface ZoneListProps {
   zones: Zone[]
   onZoneUpdated: () => void
+  onZoneDeleted: (zoneId: number) => void
 }
 
-function ZoneList({ zones, onZoneUpdated }: ZoneListProps) {
+function ZoneList({ zones, onZoneUpdated, onZoneDeleted }: ZoneListProps) {
   if (zones.length === 0) {
     return <p>No zones yet</p>
   }
@@ -17,7 +18,12 @@ function ZoneList({ zones, onZoneUpdated }: ZoneListProps) {
       <HeadingMedium style={{ margin: 0, marginBottom: '20px' }}>Zones</HeadingMedium>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {zones.map((zone) => (
-          <ZoneCard key={zone.id} zone={zone} onZoneUpdated={onZoneUpdated} />
+          <ZoneCard 
+            key={zone.id} 
+            zone={zone} 
+            onZoneUpdated={onZoneUpdated}
+            onDelete={onZoneDeleted}
+          />
         ))}
       </div>
     </div>

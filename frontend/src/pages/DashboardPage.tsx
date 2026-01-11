@@ -42,6 +42,10 @@ function DashboardPage() {
     navigate('/login')
   }
 
+  const handleZoneDeleted = (zoneId: number) => {
+    setZones(zones.filter(zone => zone.id !== zoneId))
+  }
+
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
@@ -61,7 +65,13 @@ function DashboardPage() {
             
             {error && <ErrorMessage message={error} />}
 
-            {!loading && !error && <ZoneList zones={zones} onZoneUpdated={fetchZones} />}
+            {!loading && !error && (
+              <ZoneList 
+                zones={zones} 
+                onZoneUpdated={fetchZones}
+                onZoneDeleted={handleZoneDeleted}
+              />
+            )}
           </Card>
         </div>
 
