@@ -103,6 +103,12 @@ class ApiClient {
       method: 'POST',
     })
   }
+
+  async deleteZone(zoneId: number): Promise<void> {
+    return this.request<void>(`/zones/${zoneId}`, {
+      method: 'DELETE',
+    })
+  }
 }
 
 export function useApiClient(): ApiClient {
