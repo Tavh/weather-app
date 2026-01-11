@@ -44,7 +44,7 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
     setSearchError('')
     
     try {
-      await apiClient.createZone(city.name, city.latitude, city.longitude)
+      await apiClient.createZone(city.name, city.latitude, city.longitude, city.country_code)
       // Clear search
       setSearchQuery('')
       setSearchResults([])

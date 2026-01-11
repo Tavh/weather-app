@@ -32,6 +32,7 @@ export type WeatherStatus = 'never_fetched' | 'cached' | 'fresh'
 export interface Zone {
   id: number
   name: string
+  country_code: string | null
   latitude: number
   longitude: number
   temperature: number | null

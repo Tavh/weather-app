@@ -91,10 +91,10 @@ class ApiClient {
     return this.request<Zone[]>('/zones')
   }
 
-  async createZone(name: string, latitude: number, longitude: number): Promise<Zone> {
+  async createZone(name: string, latitude: number, longitude: number, countryCode: string | null = null): Promise<Zone> {
     return this.request<Zone>('/zones', {
       method: 'POST',
-      body: JSON.stringify({ name, latitude, longitude }),
+      body: JSON.stringify({ name, country_code: countryCode, latitude, longitude }),
     })
   }
 

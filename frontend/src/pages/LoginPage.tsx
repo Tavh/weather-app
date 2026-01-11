@@ -26,6 +26,12 @@ function LoginPage() {
 
     try {
       const response = await apiClient.login(username, password)
+      
+      // Validate response has access_token before proceeding
+      if (!response?.access_token) {
+        throw new Error('Invalid response from server')
+      }
+      
       login(response.access_token)
       navigate('/dashboard')
     } catch (err) {
