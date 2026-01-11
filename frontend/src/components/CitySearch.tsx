@@ -3,6 +3,7 @@ import { Input } from 'baseui/input'
 import { Button } from 'baseui/button'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
+import ErrorMessage from './ErrorMessage'
 import type { CitySearchResult } from '../types/api'
 import { CITY_SEARCH_RESULTS_LIMIT } from '../constants'
 
@@ -96,11 +97,7 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
         )}
       </div>
 
-      {searchError && (
-        <div style={{ color: 'red', marginBottom: '10px', backgroundColor: 'lightpink', padding: '10px', borderRadius: '4px' }}>
-          {searchError}
-        </div>
-      )}
+      {searchError && <ErrorMessage message={searchError} />}
 
      {searchLoading && <p>Loading...</p>}
 

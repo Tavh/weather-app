@@ -7,6 +7,7 @@ import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
 import CitySearch from '../components/CitySearch'
 import ZoneList from '../components/ZoneList'
+import ErrorMessage from '../components/ErrorMessage'
 import type { Zone } from '../types/api'
 
 function DashboardPage() {
@@ -49,11 +50,7 @@ function DashboardPage() {
 
       {loading && <p>Loading zones...</p>}
       
-      {error && (
-        <div style={{ color: 'red', marginBottom: '10px', backgroundColor: 'lightpink', padding: '10px', borderRadius: '4px' }}>
-          {error}
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
 
       {!loading && !error && <ZoneList zones={zones} />}
 

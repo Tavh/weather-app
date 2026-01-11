@@ -6,6 +6,7 @@ import { FormControl } from 'baseui/form-control'
 import { HeadingLarge } from 'baseui/typography'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
+import ErrorMessage from '../components/ErrorMessage'
 
 function RegisterPage() {
   const [username, setUsername] = useState('')
@@ -57,9 +58,7 @@ function RegisterPage() {
             disabled={loading}
           />
         </FormControl>
-        {error && (
-          <div style={{ color: 'red', marginBottom: '10px', backgroundColor: 'lightpink', padding: '2px', borderRadius: '4px' }}>{error}</div>
-        )}
+        {error && <ErrorMessage message={error} />}
         <Button
           type="submit"
           disabled={loading}
