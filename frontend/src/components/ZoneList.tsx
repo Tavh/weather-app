@@ -1,3 +1,5 @@
+import { HeadingMedium } from 'baseui/typography'
+import ZoneCard from './ZoneCard'
 import type { Zone } from '../types/api'
 
 interface ZoneListProps {
@@ -10,20 +12,13 @@ function ZoneList({ zones }: ZoneListProps) {
   }
 
   return (
-    <div style={{ marginTop: '20px' }}>
-      <h2>Zones</h2>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+    <div>
+      <HeadingMedium style={{ margin: 0, marginBottom: '20px' }}>Zones</HeadingMedium>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {zones.map((zone) => (
-          <li key={zone.id}>
-            <div></div>
-            <div>{zone.latitude}</div>
-            <div>{zone.longitude}</div>
-            <div>{zone.temperature}</div>
-            <div>{zone.last_fetched_at}</div>
-            <div>{zone.weather_status}</div>
-          </li>
+          <ZoneCard key={zone.id} zone={zone} />
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { HeadingLarge } from 'baseui/typography'
+import { HeadingLarge, HeadingMedium } from 'baseui/typography'
 import { Button } from 'baseui/button'
+import { Card } from 'baseui/card'
 import { useAuth } from '../contexts/AuthContext'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
@@ -42,30 +43,40 @@ function DashboardPage() {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <HeadingLarge>Dashboard</HeadingLarge>
-      <p>You are logged in.</p>
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+        <HeadingLarge>Dashboard</HeadingLarge>
+        <Button onClick={handleLogout}>
+          Logout
+        </Button>
+      </div>
 
-      <CitySearch onZoneCreated={fetchZones} />
+      {/* Main content area */}
+      <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+        {/* Left column: Zones list */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Card>
+            {loading && <p>Loading zones...</p>}
+            
+            {error && <ErrorMessage message={error} />}
 
-      {loading && <p>Loading zones...</p>}
-      
-      {error && <ErrorMessage message={error} />}
+            {!loading && !error && <ZoneList zones={zones} />}
+          </Card>
+        </div>
 
-      {!loading && !error && <ZoneList zones={zones} />}
-
-      <Button
-        onClick={handleLogout}
-        overrides={{
-          BaseButton: {
-            style: {
-              marginTop: '20px',
-            },
-          },
-        }}
-      >
-        Logout
-      </Button>
+        {/* Right column: Add Zone panel */}
+        <div style={{ width: '380px', flexShrink: 0 }}>
+          <Card>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <HeadingMedium style={{ margin: 0 }}>Add Zone</HeadingMedium>
+            </div>
+            <div>
+              <CitySearch onZoneCreated={fetchZones} />
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

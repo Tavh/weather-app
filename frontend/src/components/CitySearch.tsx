@@ -60,8 +60,7 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
 
   const lastSearchedQuerySpan = <span style={{ fontWeight: 'bold' }}>'{lastSearchedQuery}'</span>
   return (
-    <div style={{ marginTop: '30px', marginBottom: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-      <h2>Add Zone</h2>
+    <div>
       <div style={{ marginBottom: '10px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
           {/* @ts-expect-error Base Web type compatibility issue */}
