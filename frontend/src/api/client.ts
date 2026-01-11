@@ -30,7 +30,9 @@ class ApiClient {
 
       if (!response.ok) {
         const errorMessageToEndpoint = ResponseStatusToErrorMessage[response.status]
-        const errorMessage = errorMessageToEndpoint[endpoint] ?? errorMessageToEndpoint['default']
+        const errorMessage = errorMessageToEndpoint?.[endpoint] 
+          ?? errorMessageToEndpoint?.['default'] 
+          ?? STANDARD_GENERAL_ERROR_MSG
         throw new Error(errorMessage)
       }
 
