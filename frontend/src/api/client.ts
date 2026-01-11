@@ -72,6 +72,13 @@ class ApiClient {
   async listZones(): Promise<Zone[]> {
     return this.request<Zone[]>('/zones')
   }
+
+  async createZone(name: string, latitude: number, longitude: number): Promise<Zone> {
+    return this.request<Zone>('/zones', {
+      method: 'POST',
+      body: JSON.stringify({ name, latitude, longitude }),
+    })
+  }
 }
 
 export function useApiClient(): ApiClient {
