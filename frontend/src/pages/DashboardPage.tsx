@@ -61,7 +61,7 @@ function DashboardPage() {
             
             {error && <ErrorMessage message={error} />}
 
-            {!loading && !error && <ZoneList zones={zones} />}
+            {!loading && !error && <ZoneList zones={zones} onZoneUpdated={fetchZones} />}
           </Card>
         </div>
 
