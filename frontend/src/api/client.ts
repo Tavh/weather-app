@@ -1,4 +1,4 @@
-import { STANDARD_GENERAL_ERROR_MSG, ResponseStatusToErrorMessage } from '../constants'
+import { STANDARD_GENERAL_ERROR_MSG } from '../constants'
 import { useAuth } from '../contexts/AuthContext'
 import type { AuthResponse, UserLogin, UserRegister, CitySearchResponse, Zone } from '../types/api'
 
@@ -6,6 +6,21 @@ import type { AuthResponse, UserLogin, UserRegister, CitySearchResponse, Zone } 
 // In local dev: use relative path (vite proxy handles it)
 // Only use absolute URL if explicitly set via env var
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+
+export const ResponseStatusToErrorMessage: Record<number, Record<string, string>> = {
+  400: {
+      'default': 'Invalid input',
+  },
+  401: {
+      'default': 'session expired, please log in again.',
+      '/auth/login': 'Invalid username or password',
+
+  },
+  500: {
+      'default': 'Server unavailable, please try again',
+      '/zones/{id}/refresh': 'Failed to refresh zone',
+  },
+}
 
 class ApiClient {
   private token: string | null
