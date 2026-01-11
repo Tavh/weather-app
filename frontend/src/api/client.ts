@@ -82,6 +82,12 @@ class ApiClient {
       body: JSON.stringify({ name, latitude, longitude }),
     })
   }
+
+  async refreshZone(zoneId: number): Promise<Zone> {
+    return this.request<Zone>(`/zones/${zoneId}/refresh`, {
+      method: 'POST',
+    })
+  }
 }
 
 export function useApiClient(): ApiClient {
