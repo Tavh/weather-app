@@ -21,8 +21,11 @@ This application provides a complete weather management system where authenticat
 - **Testing**: Pytest
 
 ### Frontend
-- **Status**: To be implemented
-- **Planned**: React with Base Web components
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **UI Library**: Base Web
+- **Routing**: React Router
+- **State Management**: React Context API
 
 ## Project Structure
 
@@ -40,10 +43,17 @@ weather-app/
 ## Quick Start
 
 ### Prerequisites
-- Docker Desktop (for running with MSSQL)
-- Python 3.10+ (for local development)
 
-### Running with Docker Compose (Recommended)
+**For Docker Compose:**
+- Docker Desktop
+- Docker Compose
+
+**For Local Development:**
+- Node.js 18+ and npm
+- Python 3.10+
+- Microsoft SQL Server (or use Docker for database only)
+
+### Option 1: Running with Docker Compose (Recommended)
 
 The easiest way to run the entire application stack:
 
@@ -53,11 +63,96 @@ docker-compose up --build
 
 This will:
 - Start Microsoft SQL Server
-- Start the backend API server
-- Make the API available at `http://127.0.0.1:8080/api/v1`
-- Provide Swagger UI at `http://127.0.0.1:8080/api/v1/ui/`
+- Start the backend API server on port 8080
+- Start the frontend application on port 3000
+- Make the API available at `http://localhost:8080/api/v1`
+- Make the frontend available at `http://localhost:3000`
+- Provide Swagger UI at `http://localhost:8080/api/v1/ui/`
 
-### Running Backend Locally
+**Access the application:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080/api/v1
+- API Docs: http://localhost:8080/api/v1/ui/
+
+### Option 2: Running Locally
+
+#### Backend Setup
+
+1. **Start the database** (using Docker):
+   ```bash
+   docker-compose up db -d
+   ```
+
+2. **Install ODBC Driver 18 for SQL Server** (Windows only):
+   
+   **Option A: Download and Install**
+   - Download from: https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server
+   - Install "ODBC Driver 18 for SQL Server"
+   - Restart your terminal after installation
+   
+   **Option B: Use SQLite instead** (No driver needed):
+   - Skip ODBC installation
+   - Don't set `DATABASE_URL` - it will use SQLite automatically
+   - Note: SQLite is a fallback for development only
+
+3. **Set up Python environment**:
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+4. **Configure environment variables**:
+   
+   **For MSSQL (with Docker database):**
+   ```powershell
+   # Windows PowerShell
+   $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+   $env:SECRET_KEY="your-secret-key-here"
+   ```
+   
+   ```bash
+   # Linux/Mac
+   export DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+   export SECRET_KEY="your-secret-key-here"
+   ```
+   
+   **For SQLite (no driver needed):**
+   ```powershell
+   # Windows PowerShell - Just set SECRET_KEY, DATABASE_URL will default to SQLite
+   $env:SECRET_KEY="your-secret-key-here"
+   ```
+   
+   Or simply don't set `DATABASE_URL` - it will use SQLite automatically.
+
+5. **Run the backend**:
+   ```bash
+   python run.py
+   ```
+
+   Backend will be available at `http://localhost:8080`
+
+#### Frontend Setup
+
+1. **Install dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+   Frontend will be available at `http://localhost:3000`
+   
+   The Vite dev server is configured to proxy API requests to `http://localhost:8080`
+
+**Note:** When running locally, the frontend uses Vite's proxy to forward `/api` requests to the backend on port 8080. No additional configuration needed.
+
+### Running Backend Locally (Detailed)
 
 For detailed backend setup instructions, see [backend/README.md](backend/README.md).
 
@@ -145,8 +240,11 @@ python temp_debug/manual_test.py
 - Multi-tenant data isolation
 - Comprehensive test suite
 
-### 🚧 In Progress
+### ✅ Completed
 - Frontend implementation (React with Base Web)
+- User authentication flow
+- Login page with API integration
+- Docker Compose setup for full stack
 
 ## License
 

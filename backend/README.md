@@ -83,8 +83,17 @@ LOG_LEVEL=INFO
 If you prefer to run Microsoft SQL Server locally (outside Docker), you can connect the backend to your local instance.
 
 **Prerequisites**: 
-*   Microsoft SQL Server installed and running locally
-*   ODBC Driver 18 for SQL Server installed
+*   Microsoft SQL Server installed and running locally (or use Docker for database only: `docker-compose up db -d`)
+*   **ODBC Driver 18 for SQL Server installed** (Required on Windows)
+
+**Installing ODBC Driver 18 for SQL Server (Windows)**:
+1. Download from: https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server
+2. Install "ODBC Driver 18 for SQL Server"
+3. Restart your terminal/PowerShell after installation
+4. Verify installation:
+   ```powershell
+   Get-OdbcDriver | Where-Object {$_.Name -like "*SQL Server*"}
+   ```
 
 **Steps**:
 1.  **Setup Python environment**:
@@ -96,11 +105,16 @@ If you prefer to run Microsoft SQL Server locally (outside Docker), you can conn
     ```
 
 2.  **Configure connection**:
-    Set the `DATABASE_URL` environment variable to point to your local MSSQL instance:
-    ```bash
-    # Windows PowerShell
-    $env:DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    Set the `DATABASE_URL` environment variable to point to your MSSQL instance:
+    ```powershell
+    # Windows PowerShell - Connect to Docker database
+    $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     
+    # Windows PowerShell - Connect to local SQL Server
+    $env:DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    ```
+    
+    ```bash
     # Linux/Mac
     export DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     ```
@@ -111,6 +125,11 @@ If you prefer to run Microsoft SQL Server locally (outside Docker), you can conn
     ```
 
 **Note**: The application code does not change. Only the connection string differs.
+
+**Troubleshooting ODBC Driver Issues**:
+- **Error: "Data source name not found"**: ODBC Driver 18 is not installed. Install it from the link above.
+- **Error: "Driver not found"**: Check the driver name matches exactly: `ODBC+Driver+18+for+SQL+Server` (with spaces encoded as `+`)
+- **Alternative**: Use SQLite fallback (see section C) - no driver installation needed
 
 ### C. SQLite (Development Fallback)
 

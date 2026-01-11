@@ -1,7 +1,10 @@
 import { useAuth } from '../contexts/AuthContext'
 import type { AuthResponse, UserLogin, UserRegister, CitySearchResponse, Zone } from '../types/api'
 
-const API_BASE = '/api/v1'
+// In Docker: use relative path (nginx proxies /api to backend)
+// In local dev: use relative path (vite proxy handles it)
+// Only use absolute URL if explicitly set via env var
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
 class ApiClient {
   private token: string | null
