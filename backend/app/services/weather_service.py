@@ -11,9 +11,7 @@ class WeatherService:
     # Uses a single provider implementation. 
     # Can be refactored to support multiple providers if requirements change.
     def fetch_current_weather(self, latitude: float, longitude: float) -> WeatherData:
-        """
-        Fetches current weather for given coordinates from the configured provider.
-        """
+        """Direct downstream call to weather provider. Raises specific `WeatherProviderUnavailable` to hide implementation details."""
         params = {
             "latitude": latitude,
             "longitude": longitude,

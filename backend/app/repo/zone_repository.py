@@ -4,13 +4,12 @@ from app.models.zone import Zone
 from app.repo.base_repository import UserScopedRepository
 
 class ZoneRepository(UserScopedRepository[Zone]):
-    # Enforces tenant isolation by implicitly filtering all queries by user_id.
+    """Concrete implementation of user-scoped persistence. Guarantees all Zone interactions are strictly specific to the bound user."""
     def __init__(self, session: Session, user_id: int):
         super().__init__(session, user_id)
 
     def create(self, zone: Zone) -> Zone:
-        """Create a new zone."""
-        # Ensure the zone is assigned to the current user (double-check)
+        """Persists new Zone. Forcibly sets `user_id` to repo scope to enforce ownership."""
         zone.user_id = self.user_id
         self.session.add(zone)
         self.session.flush()
@@ -18,20 +17,20 @@ class ZoneRepository(UserScopedRepository[Zone]):
         return zone
 
     def get_by_id(self, zone_id: int) -> Optional[Zone]:
-        """Get a zone by ID, ensuring it belongs to the authenticated user."""
+        """Resolves Zone entity. Returns `None` if ID doesn't exist OR belongs to another tenant."""
         return self._base_query(Zone).filter(Zone.id == zone_id).first()
 
     def get_all(self) -> List[Zone]:
-        """Get all zones for the authenticated user."""
+        """Fetches entire collection for the tenant. Unpaginated."""
         return self._base_query(Zone).all()
 
     def update(self, zone: Zone) -> Zone:
-        """Commit changes to an attached zone object."""
+        """Updates Zone entity (Full Update, not field-by-field)."""
         self.session.flush()
         self.session.refresh(zone)
         return zone
 
     def delete(self, zone: Zone) -> None:
-        """Delete a zone."""
+        """Deletes Zone entity."""
         self.session.delete(zone)
         self.session.flush()

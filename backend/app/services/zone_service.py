@@ -11,11 +11,12 @@ logger = logging.getLogger(__name__)
 
 class ZoneService:
     def __init__(self, session: Session, user_id: int):
-        # Repository is scoped to the user_id to inherently enforce data isolation.
+        # Service instance is bound to a specific user to enforce data isolation across all operations.
         self.repo = ZoneRepository(session, user_id)
         self.user_id = user_id
 
     def create_zone(self, dto: ZoneCreate) -> ZoneResponse:
+        """Initializes a new zone. defaults weather state to `NEVER_FETCHED` until explicit refresh."""
         logger.info(f"Creating zone '{dto.name}' for user {self.user_id}")
         new_zone = Zone(
             name=dto.name,
@@ -37,6 +38,10 @@ class ZoneService:
         return ZoneResponse.model_validate(zone)
 
     def update_zone(self, zone_id: int, dto: ZoneUpdate) -> ZoneResponse:
+        """
+        Updates zone configuration. 
+        CRITICAL: Invalidates existing weather cache (resets to `NEVER_FETCHED`) upon coordinate change to prevent stale data.
+        """
         zone = self._get_owned_zone_or_404(zone_id)
         
         logger.info(f"Updating zone {zone_id} for user {self.user_id}")
@@ -60,6 +65,7 @@ class ZoneService:
         logger.info(f"Zone {zone_id} deleted")
             
     def refresh_zone(self, zone_id: int) -> ZoneResponse:
+        """Orchestrates on-demand weather update. Fetches live data and transitions state to `FRESH`."""
         zone = self._get_owned_zone_or_404(zone_id)
         
         logger.info(f"Refreshing weather for zone {zone_id}")

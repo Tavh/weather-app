@@ -8,23 +8,15 @@ logger = logging.getLogger(__name__)
 
 class CitySearchService:
     """
-    Service for searching cities using Open-Meteo Geocoding API.
-    This is a non-persistent adapter - no caching or database storage.
+    Stateless adapter for external geocoding providers.
+    Does not cache results; relies on upstream provider reliability.
     """
     
     MAX_RESULTS = 5
     TIMEOUT_SECONDS = 5
     
     def search_cities(self, query: str) -> List[CitySearchResult]:
-        """
-        Search for cities by name using Open-Meteo Geocoding API.
-        
-        Args:
-            query: City name to search for
-            
-        Returns:
-            List of CitySearchResult objects (max 5 results)
-        """
+        """Queries external API. Filters and sanitizes results to legally match expected DTO schema."""
         if not query or not query.strip():
             logger.warning("Empty search query provided")
             return []

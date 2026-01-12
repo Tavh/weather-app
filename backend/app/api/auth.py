@@ -7,6 +7,7 @@ from app.core.database import get_session
 logger = logging.getLogger(__name__)
 
 def register(body: Dict[str, Any]) -> Tuple[Dict[str, Any], int]:
+    """Creates a new user account. Guarantees username uniqueness and stores credentials securely."""
     with get_session() as session:
         auth_service = AuthService(session)
         request_dto = UserRegister(**body)
@@ -19,6 +20,7 @@ def register(body: Dict[str, Any]) -> Tuple[Dict[str, Any], int]:
         return response_dto.model_dump(), 201
 
 def login(body: Dict[str, Any]) -> Tuple[Dict[str, Any], int]:
+    """Authenticates user credentials. Issues a JWT for subsequent stateless authorization."""
     with get_session() as session:
         auth_service = AuthService(session)
         request_dto = UserLogin(**body)

@@ -15,6 +15,7 @@ class AuthService:
         self.user_repo = UserRepository(session)
 
     def register_user(self, dto: UserRegister) -> None:
+        """Orchestrates user creation. Computes secure password hash before persistence to prevent plaintext exposure."""
         if self.user_repo.get_by_username(dto.username):
             raise BadRequest(description="Username already exists")
         
@@ -23,6 +24,7 @@ class AuthService:
         self.user_repo.create(new_user)
 
     def login_user(self, dto: UserLogin) -> AuthResponse:
+        """Verifies credentials against stored hashes. Logs security events (failed attempts) for auditability."""
         user = self.user_repo.get_by_username(dto.username)
         if not user or not check_password(dto.password, user.password_hash):
             logger.warning(f"Failed login attempt for username: {dto.username}")
