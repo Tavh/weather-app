@@ -59,9 +59,9 @@ class CitySearchService:
             return cities
             
         except requests.RequestException as e:
-            logger.warning(f"City search API request failed: {str(e)}")
-            # Return empty list on API failure (non-critical feature)
-            return []
+            logger.warning("City search provider unavailable", exc_info=e)
+            from app.core.exceptions import CitySearchUnavailable
+            raise CitySearchUnavailable("City search is temporarily unavailable. Please try again later.")
         except (KeyError, ValueError, TypeError) as e:
             logger.error(f"Invalid response format from geocoding API: {str(e)}")
             return []

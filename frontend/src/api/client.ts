@@ -44,9 +44,18 @@ class ApiClient {
       })
 
       if (!response.ok) {
+        let errorDetail: string | undefined
+        try {
+          const body = await response.json()
+          errorDetail = body.detail
+        } catch {
+          console.log('Failed to parse error response')
+        }
+
         const errorMessageToEndpoint = ResponseStatusToErrorMessage[response.status]
         const errorMessage = errorMessageToEndpoint?.[endpoint]
           ?? errorMessageToEndpoint?.['default']
+          ?? errorDetail
           ?? STANDARD_GENERAL_ERROR_MSG
         throw new Error(errorMessage)
       }

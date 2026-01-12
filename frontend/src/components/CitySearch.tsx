@@ -21,13 +21,13 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return
-    
+
     const queryToSearch = searchQuery.trim()
     setSearchLoading(true)
     setSearchError('')
     setSearchResults([])
     setLastSearchedQuery(queryToSearch)
-    
+
     try {
       const response = await apiClient.searchCities(queryToSearch)
       const limitedResults = response.results.slice(0, CITY_SEARCH_RESULTS_LIMIT)
@@ -42,7 +42,7 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
   const handleAddZone = async (city: CitySearchResult) => {
     setSearchLoading(true)
     setSearchError('')
-    
+
     try {
       await apiClient.createZone(city.name, city.latitude, city.longitude, city.country_code)
       // Clear search
@@ -98,31 +98,31 @@ function CitySearch({ onZoneCreated }: CitySearchProps) {
 
       {searchError && <ErrorMessage message={searchError} />}
 
-     {searchLoading && <p>Loading...</p>}
+      {searchLoading && <p>Loading...</p>}
 
-     {!searchLoading && lastSearchedQuery !== null && searchResults.length === 0 && (
-       <p style={{ marginTop: '15px', color: '#666' }}>
-        No results found for: {lastSearchedQuerySpan}
-       </p>
-     )}
+      {!searchLoading && !searchError && lastSearchedQuery !== null && searchResults.length === 0 && (
+        <p style={{ marginTop: '15px', color: '#666' }}>
+          No results found for: {lastSearchedQuerySpan}
+        </p>
+      )}
 
-    {!searchLoading && searchResults.length > 0 && (
-      <div style={{ marginTop: '15px' }}>
-        <p>Found {searchResults.length} results for: {lastSearchedQuerySpan}</p>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {searchResults.map((city, index) => (
-            <li
-              key={index}
-              style={{
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '10px',
-                marginBottom: '8px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+      {!searchLoading && searchResults.length > 0 && (
+        <div style={{ marginTop: '15px' }}>
+          <p>Found {searchResults.length} results for: {lastSearchedQuerySpan}</p>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {searchResults.map((city, index) => (
+              <li
+                key={index}
+                style={{
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  padding: '10px',
+                  marginBottom: '8px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <div>
                   <div style={{ fontWeight: 'bold' }}>{city.name}</div>
                   {city.country_code && (
