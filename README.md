@@ -74,6 +74,31 @@ This will:
 - Backend API: http://localhost:8080/api/v1
 - API Docs: http://localhost:8080/api/v1/ui/
 
+### Inspecting the Database (Docker)
+
+To inspect the Microsoft SQL Server database while it's running in Docker:
+
+1.  **Connect to the database container:**
+    ```bash
+    docker-compose exec db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P StrongPass123! -C
+    ```
+
+2.  **Run SQL queries:**
+    
+    List all tables:
+    ```sql
+    SELECT name FROM sys.tables;
+    GO
+    ```
+
+    View users:
+    ```sql
+    SELECT * FROM users;
+    GO
+    ```
+
+    Type `QUIT` to exit the SQL prompt.
+
 ### Option 2: Running Locally
 
 #### Backend Setup
