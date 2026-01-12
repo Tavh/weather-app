@@ -85,15 +85,15 @@ Run via Docker Compose from the project root. See root [README.md](../README.md)
     Set the `DATABASE_URL` environment variable to point to your MSSQL instance:
     ```powershell
     # Windows PowerShell - Connect to Docker database
-    $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    $env:DATABASE_URL="mssql+pyodbc://sa:<your_password>@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     
     # Windows PowerShell - Connect to local SQL Server
-    $env:DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    $env:DATABASE_URL="mssql+pyodbc://sa:<your_password>@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     ```
     
     ```bash
     # Linux/Mac
-    export DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    export DATABASE_URL="mssql+pyodbc://sa:<your_password>@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     ```
 
 3.  **Run the application**:
@@ -134,7 +134,7 @@ No database configuration needed. Creates `weather.db` automatically.
 
 **MSSQL Connection String Format**:
 ```
-mssql+pyodbc://sa:PASSWORD@HOST:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+mssql+pyodbc://sa:<password>@HOST:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
 ```
 
 ## 6. API Documentation
