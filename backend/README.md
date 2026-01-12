@@ -30,66 +30,6 @@ The application follows a strict layered architecture to ensure separation of co
 *   **Request-Scoped Sessions**: Database sessions managed via context manager with auto-commit/rollback per request
 *   **Provider Isolation**: Weather service encapsulates external API (Open-Meteo) for easy replacement
 
-### Request Flow
-
-```mermaid
-flowchart TD
-    HTTP[HTTP Request] --> OpenAPI[OpenAPI Validation]
-    OpenAPI -->|Valid| API[API Handler]
-    OpenAPI -->|Invalid| Error1[400 Bad Request]
-    
-    API -->|JWT Required| JWT[JWT Validation]
-    JWT -->|Valid| ExtractUser[Extract User ID]
-    JWT -->|Invalid| Error2[401 Unauthorized]
-    
-    ExtractUser --> Session[Create DB Session]
-    Session --> Service[Service Layer]
-    
-    Service -->|Business Logic| Repo[Repository Layer]
-    Repo -->|Add User Filter| Query[SQL Query]
-    Query --> DB[(Database)]
-    
-    DB -->|Results| Repo
-    Repo -->|Models| Service
-    Service -->|DTOs| API
-    API -->|JSON Response| HTTP
-    
-    Session -->|Success| Commit[Commit Transaction]
-    Session -->|Error| Rollback[Rollback Transaction]
-    
-    style HTTP fill:#e1f5ff
-    style API fill:#fff4e1
-    style Service fill:#ffe1f5
-    style Repo fill:#f5e1ff
-    style DB fill:#e1ffe1
-```
-
-### Authentication Flow
-
-```mermaid
-flowchart TD
-    Register[POST /auth/register] --> ValidateReg[Validate Input]
-    ValidateReg --> CheckUser[Check Username Exists]
-    CheckUser -->|Exists| Error1[400 Username Taken]
-    CheckUser -->|New| HashPass[Hash Password]
-    HashPass --> CreateUser[Create User]
-    CreateUser --> Success1[201 Created]
-    
-    Login[POST /auth/login] --> ValidateLogin[Validate Input]
-    ValidateLogin --> FindUser[Find User by Username]
-    FindUser -->|Not Found| Error2[401 Invalid Credentials]
-    FindUser -->|Found| VerifyPass[Verify Password]
-    VerifyPass -->|Invalid| Error2
-    VerifyPass -->|Valid| CreateToken[Create JWT Token]
-    CreateToken --> ReturnToken[200 + JWT Token]
-    
-    style Register fill:#e1f5ff
-    style Login fill:#e1f5ff
-    style CreateToken fill:#fff4e1
-    style Error1 fill:#ffcccc
-    style Error2 fill:#ffcccc
-```
-
 ## 3. Project Structure
 
 ```text

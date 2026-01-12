@@ -47,59 +47,11 @@ The frontend uses JWT-based authentication:
 3. **API Client**: Automatically attaches `Authorization: Bearer <token>` header to requests
 4. **Route Protection**: Unauthenticated users redirect to `/login`
 
-### Authentication Flow
-
-```mermaid
-flowchart TD
-    User[User Action] --> LoginPage[LoginPage/RegisterPage]
-    LoginPage -->|Submit| API[API Client]
-    API -->|POST /auth/login| Backend[Backend API]
-    Backend -->|JWT Token| API
-    API -->|Token| AuthContext[AuthContext.login]
-    AuthContext -->|Store| LocalStorage[localStorage]
-    AuthContext -->|Update State| Navigate[Navigate to /dashboard]
-    
-    ProtectedRoute[Protected Route] --> CheckAuth{Token in Context?}
-    CheckAuth -->|No| Redirect[Redirect to /login]
-    CheckAuth -->|Yes| Render[Render Component]
-    
-    APIRequest[API Request] --> GetToken[Get Token from Context]
-    GetToken -->|Attach Header| SendRequest[Send HTTP Request]
-    SendRequest -->|401 Response| Logout[AuthContext.logout]
-    Logout -->|Clear Token| Redirect
-    
-    style User fill:#e1f5ff
-    style AuthContext fill:#fff4e1
-    style LocalStorage fill:#ffe1f5
-    style Backend fill:#f5e1ff
-```
-
-### Component Interaction Flow
-
-```mermaid
-flowchart TD
-    User[User Interaction] --> Component[React Component]
-    Component -->|State Change| useState[useState Hook]
-    Component -->|API Call| APIClient[API Client]
-    
-    APIClient -->|Read Token| AuthContext[AuthContext]
-    AuthContext -->|Get Token| LocalStorage[localStorage]
-    APIClient -->|Attach Token| HTTP[HTTP Request]
-    HTTP -->|JSON| Backend[Backend API]
-    
-    Backend -->|Response| APIClient
-    APIClient -->|Error Handling| ErrorMessage[ErrorMessage Component]
-    APIClient -->|Success Data| Component
-    Component -->|Update State| useState
-    useState -->|Re-render| Component
-    Component -->|Display| User
-    
-    style User fill:#e1f5ff
-    style Component fill:#fff4e1
-    style APIClient fill:#ffe1f5
-    style Backend fill:#f5e1ff
-    style AuthContext fill:#e1ffe1
-```
+**Flow**:
+- User registers/logs in → receives JWT token
+- Token stored in `localStorage` via `AuthContext.login()`
+- API client reads token from context and includes in requests
+- On 401 responses, user is logged out and redirected to login
 
 ## API Integration
 
