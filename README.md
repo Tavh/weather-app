@@ -4,12 +4,9 @@ A full-stack weather management application. Users register, authenticate, and m
 
 ![Dashboard Screenshot](dashboard_screenshot.png)
 
+## Application Flow
 
-
-## Architecture
-
-### Simple Flowchart
-
+```mermaid
 flowchart LR
     UI[React UI]
     Client[API Client]
@@ -31,6 +28,9 @@ flowchart LR
     API --> Router
     Router --> Client
     Client --> UI
+```
+
+## Architecture
 
 - **Backend**: Flask REST API with OpenAPI specification
 - **Frontend**: React SPA with TypeScript
