@@ -57,14 +57,21 @@ weather-app/
 
 The easiest way to run the entire application stack:
 
-```bash
-docker-compose up --build
-```
+1. **Create environment file** (first time only):
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` to customize values if needed (passwords, ports, etc.)
+
+2. **Start all services**:
+   ```bash
+   docker-compose up --build
+   ```
 
 This will:
 - Start Microsoft SQL Server
-- Start the backend API server on port 8080
-- Start the frontend application on port 3000
+- Start the backend API server on port 8080 (configurable via `BACKEND_PORT` in `.env`)
+- Start the frontend application on port 3000 (configurable via `FRONTEND_PORT` in `.env`)
 - Make the API available at `http://localhost:8080/api/v1`
 - Make the frontend available at `http://localhost:3000`
 - Provide Swagger UI at `http://localhost:8080/api/v1/ui/`
@@ -73,6 +80,8 @@ This will:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8080/api/v1
 - API Docs: http://localhost:8080/api/v1/ui/
+
+**Note:** The `.env` file is gitignored. Copy `.env.example` to `.env` and customize values for your environment.
 
 ### Inspecting the Database (Docker)
 
@@ -83,16 +92,21 @@ To inspect the Microsoft SQL Server database while it's running in Docker:
     docker-compose exec db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P StrongPass123! -C
     ```
 
+    *Note: This opens a SQL shell (`1>`). It is not a bash shellwill not work.*
+
 2.  **Run SQL queries:**
-    List all tables:
+
+    To execute a query, type the SQL statement, press Enter, then type `GO` and press Enter again.
+    
+    Check for existing data:
     ```sql
-    SELECT name FROM sys.tables;
+    SELECT * FROM users;
     GO
     ```
 
-    View users:
+    List user tables:
     ```sql
-    SELECT * FROM users;
+    SELECT name FROM sys.tables WHERE name NOT LIKE 'spt_%' AND name NOT LIKE 'MS%';
     GO
     ```
 
@@ -146,13 +160,13 @@ docker-compose logs -f db
    **For MSSQL (with Docker database):**
    ```powershell
    # Windows PowerShell
-   $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+   $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
    $env:SECRET_KEY="your-secret-key-here"
    ```
    
    ```bash
    # Linux/Mac
-   export DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+   export DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
    export SECRET_KEY="your-secret-key-here"
    ```
    

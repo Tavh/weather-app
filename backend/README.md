@@ -73,7 +73,7 @@ The application supports **Microsoft SQL Server** as the primary database, with 
 
 **Environment Variables** (automatically set by docker-compose):
 ```bash
-DATABASE_URL=mssql+pyodbc://sa:YOUR_PASSWORD@db:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+DATABASE_URL=mssql+pyodbc://sa:YOUR_PASSWORD@db:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
 SECRET_KEY=your_secret_key_here
 LOG_LEVEL=INFO
 ```
@@ -108,15 +108,15 @@ If you prefer to run Microsoft SQL Server locally (outside Docker), you can conn
     Set the `DATABASE_URL` environment variable to point to your MSSQL instance:
     ```powershell
     # Windows PowerShell - Connect to Docker database
-    $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    $env:DATABASE_URL="mssql+pyodbc://sa:StrongPass123!@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     
     # Windows PowerShell - Connect to local SQL Server
-    $env:DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    $env:DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     ```
     
     ```bash
     # Linux/Mac
-    export DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    export DATABASE_URL="mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
     ```
 
 3.  **Run the application**:
@@ -171,12 +171,12 @@ DATABASE_URL=sqlite:///weather.db
 
 *   **Docker Compose MSSQL**:
     ```
-    mssql+pyodbc://sa:YOUR_PASSWORD@db:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+    mssql+pyodbc://sa:YOUR_PASSWORD@db:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
     ```
 
 *   **Local MSSQL**:
     ```
-    mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+    mssql+pyodbc://sa:YOUR_PASSWORD@localhost:1433/weather_app?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
     ```
 
 *   **SQLite** (fallback):
