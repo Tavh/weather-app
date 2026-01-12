@@ -155,4 +155,6 @@ python -m pytest tests
 python -m pytest tests/test_zones.py
 ```
 
+![Tests Success](tests_success.png)
 **Scope**: Tests cover Authentication flows, City Search functionality, Zone CRUD operations, Multi-tenant data isolation, and Weather Service integration (mocked).
+

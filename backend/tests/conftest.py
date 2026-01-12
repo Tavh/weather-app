@@ -62,7 +62,9 @@ def session(app):
     # Restore
     app.core.database.SessionLocal = original_session_local
     session.close()
-    transaction.rollback()
+    # Rollback transaction before closing connection
+    if transaction.is_active:
+        transaction.rollback()
     connection.close()
 
 @pytest.fixture

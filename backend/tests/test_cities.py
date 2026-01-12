@@ -84,15 +84,15 @@ def test_search_cities_max_results_limit(client, auth_header):
         assert len(resp.json["results"]) == 5
 
 def test_search_cities_api_failure_handling(client, auth_header):
-    """Test that API failures return empty list gracefully."""
+    """Test that API failures return 503 Service Unavailable."""
     import requests
     
     with patch("app.services.city_search_service.requests.get", side_effect=requests.RequestException("API Error")):
         resp = client.get("/api/v1/cities/search", headers=auth_header, query_string={"q": "Paris"})
         
-        # Should return 200 with empty results, not raise an error
-        assert resp.status_code == 200
-        assert resp.json["results"] == []
+        # Should return 503 when external API is unavailable
+        assert resp.status_code == 503
+        assert "detail" in resp.json
 
 def test_search_cities_partial_match(client, auth_header):
     """Test city search with partial city name."""
