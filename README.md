@@ -2,7 +2,7 @@
 
 A full-stack weather management application. Users register, authenticate, and manage weather zones (saved locations) with real-time temperature data.
 
-![Dashboard Screenshot](dashboard_screenshot.png)
+![App Demo](app_demo.mp4)
 
 ## High Level Flow
 
