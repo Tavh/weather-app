@@ -4,6 +4,37 @@ A full-stack weather management application. Users register, authenticate, and m
 
 ![Dashboard Screenshot](dashboard_screenshot.png)
 
+## Application Flow
+
+```mermaid
+flowchart TD
+    User[User] --> Frontend[React Frontend]
+    Frontend -->|HTTP Request| Backend[Flask Backend API]
+    Backend -->|Query| Database[(SQL Server)]
+    
+    Frontend -->|JWT Token| Auth[Authentication]
+    Auth -->|Store Token| LocalStorage[localStorage]
+    LocalStorage -->|Attach to Requests| Backend
+    
+    Backend -->|Validate JWT| Security[Security Layer]
+    Security -->|Authorized| Service[Service Layer]
+    Security -->|Unauthorized| Frontend
+    
+    Service -->|Business Logic| Repo[Repository Layer]
+    Repo -->|Multi-tenant Filter| Database
+    
+    Database -->|Data| Repo
+    Repo -->|DTOs| Service
+    Service -->|JSON Response| Backend
+    Backend -->|JSON| Frontend
+    Frontend -->|Render UI| User
+    
+    style User fill:#e1f5ff
+    style Frontend fill:#fff4e1
+    style Backend fill:#ffe1f5
+    style Database fill:#e1ffe1
+```
+
 ## Architecture
 
 - **Backend**: Flask REST API with OpenAPI specification
