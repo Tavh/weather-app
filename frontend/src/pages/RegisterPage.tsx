@@ -7,11 +7,13 @@ import { HeadingLarge } from 'baseui/typography'
 import { useApiClient } from '../api/client'
 import { getErrorMessage } from '../util'
 import ErrorMessage from '../components/ErrorMessage'
+import { REDIRECT_TO_LOGINMILLIS } from '../constants'
 
 function RegisterPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const apiClient = useApiClient()
@@ -19,11 +21,16 @@ function RegisterPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
+    setSuccess(false)
     setLoading(true)
 
     try {
       await apiClient.register(username, password)
-      navigate('/login')
+      setSuccess(true)
+      // Redirect to login after showing success message
+      setTimeout(() => {
+        navigate('/login')
+      }, REDIRECT_TO_LOGINMILLIS)
     } catch (err) {
       setError(getErrorMessage(err))
     } finally {
@@ -59,6 +66,18 @@ function RegisterPage() {
           />
         </FormControl>
         {error && <ErrorMessage message={error} />}
+        {success && (
+          <div style={{ 
+            marginBottom: '16px', 
+            padding: '10px', 
+            backgroundColor: '#e8f5e9', 
+            borderRadius: '4px',
+            color: '#2e7d32',
+            fontSize: '14px'
+          }}>
+            Account created successfully! Redirecting to login...
+          </div>
+        )}
         <Button
           type="submit"
           disabled={loading}
