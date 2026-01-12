@@ -84,7 +84,6 @@ To inspect the Microsoft SQL Server database while it's running in Docker:
     ```
 
 2.  **Run SQL queries:**
-    
     List all tables:
     ```sql
     SELECT name FROM sys.tables;
@@ -98,6 +97,20 @@ To inspect the Microsoft SQL Server database while it's running in Docker:
     ```
 
     Type `QUIT` to exit the SQL prompt.
+
+### Viewing Logs (Docker)
+
+To view the logs for the running services:
+
+```bash
+# View all logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f db
+```
 
 ### Option 2: Running Locally
 

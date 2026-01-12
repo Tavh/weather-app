@@ -5,7 +5,6 @@ from app.dtos.zone_dto import ZoneCreate, ZoneUpdate
 from app.core.database import get_session
 
 def _get_user_id() -> int:
-def _get_user_id() -> int:
     """Extracts user ID from the validated security context (JWT subject)."""
     token_info = connexion.context.get('token_info')
     return int(token_info['sub'])
