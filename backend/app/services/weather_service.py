@@ -8,10 +8,8 @@ from app.core.config import Config
 logger = logging.getLogger(__name__)
 
 class WeatherService:
-    # Implemented in 'YAGNI' approach. If other providers are needed
-    # code change is required but it is so small that it is better
-    # than implementing strategy pattern for different providers
-    # as that would be overengineering for this simple case
+    # Uses a single provider implementation. 
+    # Can be refactored to support multiple providers if requirements change.
     def fetch_current_weather(self, latitude: float, longitude: float) -> WeatherData:
         """
         Fetches current weather for given coordinates from the configured provider.

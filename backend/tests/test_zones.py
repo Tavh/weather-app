@@ -128,7 +128,11 @@ def test_create_zone_invalid_coordinates(client, auth_header):
     assert resp.status_code == 400
 
 def test_update_zone_lifecycle(client, auth_header):
-    """Test full update lifecycle including weather status reset."""
+    """
+    Test full update lifecycle.
+    
+    Verifies that modifying a zone's location invalidates any cached weather data.
+    """
     # 1. Create
     resp = client.post("/api/v1/zones", headers=auth_header, json={
         "name": "Original",

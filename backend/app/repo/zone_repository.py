@@ -4,6 +4,7 @@ from app.models.zone import Zone
 from app.repo.base_repository import UserScopedRepository
 
 class ZoneRepository(UserScopedRepository[Zone]):
+    # Enforces tenant isolation by implicitly filtering all queries by user_id.
     def __init__(self, session: Session, user_id: int):
         super().__init__(session, user_id)
 

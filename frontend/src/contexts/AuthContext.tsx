@@ -8,6 +8,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+// Manages global auth state.
+// Context is sufficient here since state is minimal (just the token).
+
 const TOKEN_KEY = 'weather_app_token'
 
 interface AuthProviderProps {

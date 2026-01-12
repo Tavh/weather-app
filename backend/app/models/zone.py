@@ -12,6 +12,8 @@ class Zone(Base):
     country_code = Column(String(2), nullable=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
+    # Caches the latest fetched weather data directly on the entity.
+    # Manually invalidated when zone coordinates change or refreshed on demand.
     temperature = Column(Float, nullable=True)
     last_fetched_at = Column(DateTime, nullable=True)
     weather_status = Column(Enum(WeatherStatus, name="weather_status_enum"), default=WeatherStatus.NEVER_FETCHED, nullable=False)

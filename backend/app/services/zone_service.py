@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class ZoneService:
     def __init__(self, session: Session, user_id: int):
+        # Repository is scoped to the user_id to inherently enforce data isolation.
         self.repo = ZoneRepository(session, user_id)
         self.user_id = user_id
 
@@ -46,6 +47,8 @@ class ZoneService:
         zone.weather_status = WeatherStatus.NEVER_FETCHED
         zone.temperature = None
         zone.last_fetched_at = None
+        # Invalidates cached weather data when location changes.
+        # Data must be explicitly refreshed by the user.
         
         updated_zone = self.repo.update(zone)
         return ZoneResponse.model_validate(updated_zone)
