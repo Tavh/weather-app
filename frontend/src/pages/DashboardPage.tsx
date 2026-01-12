@@ -35,7 +35,7 @@ function DashboardPage() {
   useEffect(() => {
     fetchZones()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // TODO: Currently only fetch on mount, think if we should add a condition to refetch
+  }, []) // Fetch zones on component mount
 
   const handleLogout = () => {
     logout()

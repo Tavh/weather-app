@@ -49,7 +49,7 @@ class ApiClient {
           const body = await response.json()
           errorDetail = body.detail
         } catch {
-          console.log('Failed to parse error response')
+          // Error response is not valid JSON, use default error message
         }
 
         const errorMessageToEndpoint = ResponseStatusToErrorMessage[response.status]

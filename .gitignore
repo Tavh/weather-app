@@ -30,7 +30,9 @@ dist/
 htmlcov/
 
 # DB
-
+*.db
 *.DB
+weather.db
+backend/weather.db
 
 temp_debug/

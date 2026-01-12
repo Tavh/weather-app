@@ -45,7 +45,7 @@ def session(app):
     session_factory = sessionmaker(bind=connection)
     session = scoped_session(session_factory)
     
-    # Hack: We need the API to use THIS session factory or engine.
+    # Override database session for testing: API handlers use this session factory
     # Since our 'get_session' in database.py creates a new SessionLocal(),
     # determining how to inject this isolated session into the running API 
     # is tricky without a dependency override system.
