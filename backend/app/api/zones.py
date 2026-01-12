@@ -20,7 +20,6 @@ def create_zone(body: Dict[str, Any]) -> Tuple[Dict[str, Any], int]:
     with get_session() as session:
         user_id = _get_user_id()
         service = ZoneService(session, user_id)
-        # Pydantic validation
         dto = ZoneCreate(**body)
         
         created = service.create_zone(dto)

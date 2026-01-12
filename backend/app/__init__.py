@@ -1,7 +1,12 @@
 import connexion
 from pathlib import Path
 
+from app.core.logging import setup_logging
+
 def create_app():
+    # Setup logging immediately
+    setup_logging()
+    
     # Specification dir
     specification_dir = Path(__file__).parent.parent / 'openapi'
     

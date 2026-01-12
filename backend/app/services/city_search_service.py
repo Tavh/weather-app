@@ -67,7 +67,7 @@ class CitySearchService:
             return cities
             
         except requests.RequestException as e:
-            logger.error(f"City search API request failed: {str(e)}")
+            logger.warning(f"City search API request failed: {str(e)}")
             # Return empty list on API failure (non-critical feature)
             return []
         except (KeyError, ValueError, TypeError) as e:

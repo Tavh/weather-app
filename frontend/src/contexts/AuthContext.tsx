@@ -31,10 +31,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [token])
 
   const login = (newToken: string) => {
+    console.info('User logged in successfully')
     setToken(newToken)
   }
 
   const logout = () => {
+    console.info('User initiated logout')
     setToken(null)
   }
 

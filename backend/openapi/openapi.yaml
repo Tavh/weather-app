@@ -78,6 +78,7 @@ components:
           minimum: -180
           maximum: 180
           example: 2.3522
+        
 
     ZoneUpdate:
       type: object

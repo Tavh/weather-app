@@ -45,5 +45,5 @@ class WeatherService:
             )
 
         except (requests.RequestException, ValueError) as e:
-            logger.error(f"Weather fetch failed: {str(e)}")
+            logger.warning(f"Weather fetch failed: {str(e)}")
             raise WeatherProviderUnavailable(description="Unable to fetch weather data")

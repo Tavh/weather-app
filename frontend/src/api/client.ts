@@ -9,16 +9,16 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
 export const ResponseStatusToErrorMessage: Record<number, Record<string, string>> = {
   400: {
-      'default': 'Invalid input',
+    'default': 'Invalid input',
   },
   401: {
-      'default': 'session expired, please log in again.',
-      '/auth/login': 'Invalid username or password',
+    'default': 'session expired, please log in again.',
+    '/auth/login': 'Invalid username or password',
 
   },
   500: {
-      'default': 'Server unavailable, please try again',
-      '/zones/{id}/refresh': 'Failed to refresh zone',
+    'default': 'Server unavailable, please try again',
+    '/zones/{id}/refresh': 'Failed to refresh zone',
   },
 }
 
@@ -45,8 +45,8 @@ class ApiClient {
 
       if (!response.ok) {
         const errorMessageToEndpoint = ResponseStatusToErrorMessage[response.status]
-        const errorMessage = errorMessageToEndpoint?.[endpoint] 
-          ?? errorMessageToEndpoint?.['default'] 
+        const errorMessage = errorMessageToEndpoint?.[endpoint]
+          ?? errorMessageToEndpoint?.['default']
           ?? STANDARD_GENERAL_ERROR_MSG
         throw new Error(errorMessage)
       }
@@ -59,6 +59,7 @@ class ApiClient {
     } catch (err) {
       // Handle network errors and other fetch failures
       if (err instanceof Error) {
+        console.error(`API Call failed: ${endpoint}`, err.message)
         // If it's already our normalized error, re-throw it
         throw err
       }

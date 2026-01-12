@@ -43,10 +43,12 @@ function DashboardPage() {
   }
 
   const handleZoneDeleted = (zoneId: number) => {
+    console.info(`Zone deleted: ${zoneId}`)
     setZones(zones.filter(zone => zone.id !== zoneId))
   }
 
   const handleZoneUpdated = (updatedZone: Zone) => {
+    console.info(`Zone updated: ${updatedZone.name} (${updatedZone.id})`)
     setZones(zones.map(zone => zone.id === updatedZone.id ? updatedZone : zone))
   }
 
@@ -66,12 +68,12 @@ function DashboardPage() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <Card>
             {loading && <p>Loading zones...</p>}
-            
+
             {error && <ErrorMessage message={error} />}
 
             {!loading && !error && (
-              <ZoneList 
-                zones={zones} 
+              <ZoneList
+                zones={zones}
                 onZoneUpdated={handleZoneUpdated}
                 onZoneDeleted={handleZoneDeleted}
               />

@@ -6,6 +6,10 @@ from app.repo.user_repository import UserRepository
 from app.core.security import hash_password, check_password, create_access_token
 from app.core.config import Config
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class AuthService:
     def __init__(self, session: Session):
         self.user_repo = UserRepository(session)
@@ -21,10 +25,12 @@ class AuthService:
     def login_user(self, dto: UserLogin) -> AuthResponse:
         user = self.user_repo.get_by_username(dto.username)
         if not user or not check_password(dto.password, user.password_hash):
+            logger.warning(f"Failed login attempt for username: {dto.username}")
             raise Unauthorized(description="Invalid credentials")
         
         # Create Token
         token = create_access_token(user_id=user.id)
+        logger.info(f"Successful login for user_id={user.id}")
         return AuthResponse(
             access_token=token,
             token_type="Bearer",
