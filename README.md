@@ -1,6 +1,6 @@
 # Weather App
 
-A full-stack Weather App built for Ikarus Security, allowing users to register, log in, and manage their own "weather zones" (saved cities or locations) through a CRUD API. For each zone, the app fetches current temperature data from a public weather API.
+A full-stack Weather App, allowing users to register, log in, and manage their own "weather zones" (saved cities or locations) through a CRUD API. For each zone, the app fetches current temperature data from a public weather API.
 
 ## Project Overview
 
