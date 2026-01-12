@@ -4,14 +4,14 @@ A full-stack weather management application. Users register, authenticate, and m
 
 ![Dashboard Screenshot](dashboard_screenshot.png)
 
-## Application Flow
+## High Level Flow
 
 ```mermaid
 flowchart LR
     UI[React UI]
     Client[API Client]
     Router[OpenAPI Router]
-    API[API Handlers]
+    API[Lightweight API Handlers]
     Service[Service Layer]
     Repo[Repository]
     DB[(SQL Server)]
